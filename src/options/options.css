@@ -17,3 +17,8 @@ kbd {
   border-radius: 4px; background: var(--bg-soft);
 }
 @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } }
+.welcome {
+  padding: 12px 14px; border-radius: var(--radius); background: var(--accent-soft);
+  border: 1px solid var(--accent);
+}
+.card.focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
