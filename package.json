@@ -1,0 +1,12 @@
+{
+  "name": "selective-translate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension: translate only the text you select, save words, review with spaced repetition.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "rm -f selective-translate.zip && zip -r selective-translate.zip manifest.json src icons -x '*.DS_Store'"
+  },
+  "license": "MIT"
+}

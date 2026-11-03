@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Selective Translate — Settings</title>
+  <link rel="stylesheet" href="../ui/common.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-head">
+      <img src="../../icons/icon48.png" width="40" height="40" alt="">
+      <div>
+        <h1>Selective Translate</h1>
+        <p class="muted">Select a word or sentence on any page, then click the small button to see its translation. The rest of the page stays in the language you’re learning.</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Languages</h2>
+      <div class="grid2">
+        <label class="field">
+          <span>Language you’re reading (source)</span>
+          <select data-setting="sourceLang" data-options="languages+auto"></select>
+        </label>
+        <label class="field">
+          <span>Show translations in (target)</span>
+          <select data-setting="targetLang" data-options="languages"></select>
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Translation service</h2>
+      <label class="field">
+        <span>Provider</span>
+        <select data-setting="provider" data-options="providers"></select>
+      </label>
+      <div class="provider-fields" data-provider-fields></div>
+      <p class="muted small" id="providerHint"></p>
+      <div class="row">
+        <button class="btn" id="test" type="button">Test connection</button>
+        <span id="testResult" class="small" role="status"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Behaviour</h2>
+      <label class="switch"><input type="checkbox" data-setting="enabled"><i></i> Enabled</label>
+      <label class="field">
+        <span>Show translation</span>
+        <select data-setting="triggerMode">
+          <option value="button">After clicking the button next to the selection (recommended)</option>
+          <option value="instant">Immediately on selection</option>
+        </select>
+      </label>
+      <label class="switch"><input type="checkbox" data-setting="wordDetails"><i></i> Show transcription and part of speech for single words</label>
+      <label class="switch"><input type="checkbox" data-setting="highlightSaved"><i></i> Highlight saved words on pages (yellow = learning, green = mastered)</label>
+      <label class="field">
+        <span>Don’t run on these sites (one per line)</span>
+        <textarea data-setting="disabledSites" data-type="list" placeholder="example.com"></textarea>
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>Pronunciation</h2>
+      <label class="switch"><input type="checkbox" data-setting="autoPronounce"><i></i> Pronounce single words automatically</label>
+      <label class="field">
+        <span>Speech rate: <output id="rateOut"></output></span>
+        <input type="range" min="0.5" max="1.5" step="0.05" data-setting="speechRate">
+      </label>
+      <div class="row">
+        <input type="text" id="speakText" value="Bonjour, comment ça va ?" aria-label="Text to pronounce">
+        <select id="speakLang" aria-label="Voice language"></select>
+        <button class="btn" id="speak" type="button">Listen</button>
+      </div>
+      <p class="muted small">Uses your system’s speech voices (Web Speech API). Install more voices in your OS settings for better coverage.</p>
+    </section>
+
+    <section class="card">
+      <h2>Keyboard shortcut</h2>
+      <p>Press <kbd>Alt</kbd>+<kbd>T</kbd> to translate the current selection. Change it at
+        <a href="#" id="shortcuts">chrome://extensions/shortcuts</a>.</p>
+    </section>
+
+    <p class="muted small center"><a href="../dictionary/dictionary.html">Open dictionary &amp; flashcards</a></p>
+  </div>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

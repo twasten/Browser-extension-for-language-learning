@@ -1,0 +1,19 @@
+body { background: var(--bg-soft); }
+.wrap { max-width: 680px; margin: 0 auto; padding: 28px 16px 48px; display: grid; gap: 14px; }
+.page-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 4px; }
+.page-head p { margin: 4px 0 0; }
+.card { display: grid; gap: 12px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.provider-fields { display: grid; gap: 10px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row input[type="text"] { flex: 1; min-width: 160px; width: auto; }
+.row select { width: auto; }
+.center { text-align: center; }
+.ok { color: var(--ok); }
+.err { color: var(--danger); }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+kbd {
+  font: 12px ui-monospace, monospace; padding: 1px 5px; border: 1px solid var(--line);
+  border-radius: 4px; background: var(--bg-soft);
+}
+@media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } }

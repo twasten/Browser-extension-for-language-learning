@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Selective Translate</title>
+  <link rel="stylesheet" href="../ui/common.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="top">
+    <img src="../../icons/icon32.png" width="22" height="22" alt="">
+    <h1>Selective Translate</h1>
+    <label class="switch" title="Turn the extension on or off everywhere">
+      <input type="checkbox" data-setting="enabled" aria-label="Enabled"><i></i>
+    </label>
+  </header>
+
+  <main>
+    <label class="switch site" id="siteRow" hidden>
+      <input type="checkbox" id="siteToggle"><i></i>
+      <span>Active on <b id="siteName"></b></span>
+    </label>
+
+    <section class="langs">
+      <label class="field">
+        <span>I’m reading in</span>
+        <select data-setting="sourceLang" data-options="languages+auto"></select>
+      </label>
+      <button class="swap" id="swap" type="button" title="Swap languages" aria-label="Swap languages">⇄</button>
+      <label class="field">
+        <span>Translate to</span>
+        <select data-setting="targetLang" data-options="languages"></select>
+      </label>
+    </section>
+
+    <label class="field">
+      <span>Translation service</span>
+      <select data-setting="provider" data-options="providers"></select>
+    </label>
+    <div class="provider-fields" data-provider-fields></div>
+
+    <label class="field">
+      <span>Show translation</span>
+      <select data-setting="triggerMode">
+        <option value="button">On button click (recommended)</option>
+        <option value="instant">Instantly on selection</option>
+      </select>
+    </label>
+
+    <label class="switch"><input type="checkbox" data-setting="highlightSaved"><i></i> Highlight saved words on pages</label>
+
+    <section class="stats" aria-label="Progress">
+      <div class="stat"><b id="statSaved">0</b><span>saved</span></div>
+      <div class="stat"><b id="statDue">0</b><span>due today</span></div>
+      <div class="stat"><b id="statKnown">0</b><span>mastered</span></div>
+    </section>
+
+    <div class="actions">
+      <button class="btn primary" id="review" type="button">Review cards</button>
+      <button class="btn" id="dictionary" type="button">Dictionary</button>
+    </div>
+  </main>
+
+  <footer>
+    <a href="#" id="options">All settings</a>
+    <span class="muted small">Shortcut: <kbd>Alt</kbd>+<kbd>T</kbd></span>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
