@@ -25,6 +25,7 @@ The settings page opens on first install. **Choose the language you want transla
 | --- | --- |
 | Translate a selection | Click the floating button, press <kbd>Alt</kbd>+<kbd>T</kbd>, or right-click → *Translate “…”* |
 | Close the tooltip | <kbd>Esc</kbd> or click anywhere outside it |
+| Move the tooltip | Drag it by its top row. Later translations open in the same spot. Double-click the top row to put it back next to the selection. |
 | Turn off on one site | Popup → *Active on this site* |
 | Review flashcards | Popup → **Review cards** (<kbd>Space</kbd> shows the answer, <kbd>1</kbd>–<kbd>4</kbd> rate it) |
 | Dictionary in the side panel | Popup → **Dictionary** |

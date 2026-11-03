@@ -106,7 +106,14 @@
       padding: 10px 12px 8px; animation: st-pop .12s ease-out; text-align: left;
     }
     @keyframes st-pop { from { opacity: 0; transform: translateY(3px); } }
-    .st-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .st-head {
+      display: flex; align-items: center; gap: 6px; margin: -4px -6px 4px; padding: 4px 6px;
+      border-radius: 8px; cursor: grab; user-select: none; touch-action: none;
+    }
+    .st-head:hover { background: var(--chip); }
+    .st-tip.dragging { cursor: grabbing; box-shadow: 0 16px 40px rgba(0,0,0,.25); }
+    .st-tip.dragging .st-head { cursor: grabbing; }
+    .st-icon, .st-select { cursor: pointer; }
     .st-word { font-weight: 650; font-size: 15px; overflow-wrap: anywhere; }
     .st-phon { color: var(--muted); font-size: 13px; }
     .st-spacer { flex: 1; }
@@ -176,6 +183,7 @@
       });
       tip = h('div', { class: 'st-tip', role: 'dialog', 'aria-live': 'polite', hidden: true, style: 'pointer-events:auto' });
       shadow.append(style, btn, tip);
+      setupDragging();
     }
     document.documentElement.appendChild(host);
   }
@@ -268,8 +276,27 @@
   let tipState = null; // { sel, result }
   let requestId = 0;
 
+  // Where the user dragged the tooltip, in viewport coordinates (null = next to the selection).
+  // Saved so later tooltips open in the same convenient place, on any site.
+  const POSITION_KEY = 'tooltipPosition';
+  let pinned = null;
+
+  function clampToViewport(x, y) {
+    const vw = document.documentElement.clientWidth;
+    return {
+      x: Math.max(8, Math.min(x, vw - tip.offsetWidth - 8)),
+      y: Math.max(8, Math.min(y, innerHeight - tip.offsetHeight - 8))
+    };
+  }
+
   function positionTooltip() {
     if (!tipState || tip.hidden) return;
+    if (pinned) {
+      const { x, y } = clampToViewport(pinned.x, pinned.y);
+      tip.style.left = `${scrollX + x}px`;
+      tip.style.top = `${scrollY + y}px`;
+      return;
+    }
     const box = tipState.sel.box;
     const vw = document.documentElement.clientWidth;
     const w = tip.offsetWidth;
@@ -281,6 +308,54 @@
     if (top + th > viewBottom && box.top - th - 8 >= scrollY) top = box.top - th - 8;
     tip.style.left = `${left}px`;
     tip.style.top = `${top}px`;
+  }
+
+  /** Drag the tooltip by its header row; double-click the header to snap back. */
+  function setupDragging() {
+    let drag = null;
+    const onHeader = (e) => e.target.closest?.('.st-head') && !e.target.closest('button, select, a');
+
+    tip.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || !onHeader(e)) return;
+      e.preventDefault(); // no text selection while dragging
+      const r = tip.getBoundingClientRect();
+      drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, moved: false };
+    });
+
+    tip.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.moved) {
+        // Small threshold so clicks and double-clicks on the header aren't drags.
+        if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 4) return;
+        drag.moved = true;
+        tip.classList.add('dragging');
+        tip.setPointerCapture(e.pointerId); // keep receiving moves even off the tooltip
+      }
+      const { x, y } = clampToViewport(e.clientX - drag.dx, e.clientY - drag.dy);
+      drag.x = x;
+      drag.y = y;
+      tip.style.left = `${scrollX + x}px`;
+      tip.style.top = `${scrollY + y}px`;
+    });
+
+    const end = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (drag.moved) {
+        pinned = { x: drag.x, y: drag.y };
+        chrome.storage.local.set({ [POSITION_KEY]: pinned }).catch(() => {});
+      }
+      tip.classList.remove('dragging');
+      drag = null;
+    };
+    tip.addEventListener('pointerup', end);
+    tip.addEventListener('pointercancel', end);
+
+    tip.addEventListener('dblclick', (e) => {
+      if (!onHeader(e)) return;
+      pinned = null;
+      chrome.storage.local.remove(POSITION_KEY).catch(() => {});
+      positionTooltip();
+    });
   }
 
   function closeTooltip() {
@@ -385,7 +460,7 @@
 
     const head = h(
       'div',
-      { class: 'st-head' },
+      { class: 'st-head', title: 'Drag to move · double-click to put back' },
       isWord ? h('span', { class: 'st-word', lang: r.sourceLang || undefined }, r.text) : h('span', { class: 'st-phon' }, langs),
       isWord && r.transcription ? h('span', { class: 'st-phon' }, r.transcription.startsWith('/') ? r.transcription : `[${r.transcription}]`) : null,
       h('span', { class: 'st-spacer' }),
@@ -589,6 +664,9 @@
       if (!isActive()) hideAll();
       scheduleHighlight(50);
     }
+    if (area === 'local' && changes[POSITION_KEY]) {
+      pinned = changes[POSITION_KEY].newValue || null; // moved in another tab
+    }
     if (area === 'local' && changes[STORAGE_KEYS.dictionary]) {
       dictionary = changes[STORAGE_KEYS.dictionary].newValue || {};
       updateSaveButton();
@@ -600,10 +678,12 @@
 
   (async () => {
     try {
-      const [s, d] = await Promise.all([
+      const [s, d, pos] = await Promise.all([
         chrome.storage.sync.get(STORAGE_KEYS.settings),
-        chrome.storage.local.get(STORAGE_KEYS.dictionary)
+        chrome.storage.local.get(STORAGE_KEYS.dictionary),
+        chrome.storage.local.get(POSITION_KEY)
       ]);
+      pinned = pos[POSITION_KEY] || null;
       settings = { ...C.DEFAULT_SETTINGS, ...(s[STORAGE_KEYS.settings] || {}) };
       dictionary = d[STORAGE_KEYS.dictionary] || {};
       scheduleHighlight(400);
