@@ -125,6 +125,14 @@
       background: var(--accent-soft); color: var(--accent); font-size: 11.5px; font-weight: 600;
     }
     .st-terms { color: var(--muted); }
+    .st-note {
+      margin-top: 8px; padding: 8px; border-radius: 8px; background: var(--accent-soft);
+      font-size: 12.5px; display: grid; gap: 6px;
+    }
+    .st-select {
+      font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--bg); color: var(--fg); width: 100%;
+    }
     .st-foot { margin-top: 8px; display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11.5px; }
     .st-error { color: #dc2626; }
     .st-link { color: var(--accent); cursor: pointer; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; }
@@ -404,10 +412,40 @@
       if (extras.length) body.push(h('div', { class: 'st-pos' }, extras));
     }
 
+    if (C.sameLanguage(r.sourceLang, r.targetLang)) body.push(sameLanguageNote(r));
+
     const foot = h('div', { class: 'st-foot' }, h('span', {}, isWord ? langs : ''), h('span', {}, r.provider));
     tip.replaceChildren(head, ...body, foot);
     updateSaveButton();
     positionTooltip();
+  }
+
+  /**
+   * The text is already in the target language (e.g. EN → EN), usually because
+   * the target defaulted to the browser language. Let the user pick one inline.
+   */
+  function sameLanguageNote(r) {
+    const select = h('select', { class: 'st-select', 'aria-label': 'Translate into' }, h('option', { value: '' }, 'Choose a language…'));
+    const note = h(
+      'div',
+      { class: 'st-note' },
+      h('div', {}, 'This text is already in the language translations are shown in. Translate into:'),
+      select
+    );
+    send({ type: 'languages' }).then((res) => {
+      for (const l of res?.languages || []) {
+        if (!C.sameLanguage(l.code, r.targetLang)) select.append(h('option', { value: l.code }, l.name));
+      }
+    });
+    select.addEventListener('change', async () => {
+      if (!select.value || !tipState) return;
+      const sel = tipState.sel;
+      const res = await send({ type: 'setTargetLang', lang: select.value });
+      if (!res?.ok) return renderError(res?.error || 'Could not save the language');
+      settings.targetLang = select.value;
+      openTooltip(sel);
+    });
+    return note;
   }
 
   // ---------------------------------------------------------------- highlighting

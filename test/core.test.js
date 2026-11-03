@@ -52,3 +52,12 @@ test('buildPhraseRegex matches whole words only', () => {
   assert.deepEqual(found('A cat, a catalog, Ice  cream and 我的猫'), ['cat', 'Ice  cream', '猫']);
   assert.equal(C.buildPhraseRegex([]), null);
 });
+
+test('sameLanguage compares base codes, keeps Chinese scripts apart', () => {
+  assert.ok(C.sameLanguage('en', 'en-US'));
+  assert.ok(!C.sameLanguage('en', 'ru'));
+  assert.ok(!C.sameLanguage('zh-CN', 'zh-TW'));
+  assert.ok(C.sameLanguage('zh-CN', 'zh'));
+  assert.ok(!C.sameLanguage(null, 'en'));
+  assert.ok(!C.sameLanguage('auto', 'en'));
+});

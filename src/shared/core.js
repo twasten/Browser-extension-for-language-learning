@@ -96,6 +96,18 @@
     return String(code || '').toLowerCase().split(/[-_]/)[0];
   }
 
+  /** "en" vs "en-US" → same; "zh-CN" vs "zh-TW" → different scripts, not the same. */
+  function sameLanguage(a, b) {
+    if (!a || !b || a === 'auto' || b === 'auto') return false;
+    const x = String(a).toLowerCase();
+    const y = String(b).toLowerCase();
+    if (x.startsWith('zh') && y.startsWith('zh')) {
+      const trad = (s) => /tw|hk|hant/.test(s);
+      return trad(x) === trad(y);
+    }
+    return langBase(x) === langBase(y);
+  }
+
   /** Stable dictionary key: "<source lang>:<lowercased text>". */
   function dictKey(text, lang) {
     return `${langBase(lang) || 'auto'}:${normalize(text).toLocaleLowerCase()}`;
@@ -162,6 +174,7 @@
     classify,
     extractSentence,
     langBase,
+    sameLanguage,
     dictKey,
     isMastered,
     hostnameMatches,

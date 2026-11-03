@@ -26,6 +26,12 @@ const settings = await bindSettings(document, (key, value) => {
   $('testResult').textContent = '';
 });
 showHint(settings.provider);
+
+if (location.hash === '#welcome') {
+  $('welcome').hidden = false;
+  $('languagesCard').classList.add('focus');
+  document.querySelector('[data-setting="targetLang"]').focus();
+}
 showRate(settings.speechRate);
 
 $('test').addEventListener('click', async () => {

@@ -19,7 +19,7 @@ and ask for help only on the word or sentence you don't understand.
 3. Click **Load unpacked** and select the repo folder (the one containing `manifest.json`).
 4. Open any article, select a word and click the button that appears.
 
-The settings page opens on first install. The target language defaults to your browser's UI language.
+The settings page opens on first install. **Choose the language you want translations shown in** (it defaults to your browser's UI language). If you select text that is already in that language, for example English text with English as the target, the tooltip says so and lets you pick another language right there.
 
 | Action | How |
 | --- | --- |

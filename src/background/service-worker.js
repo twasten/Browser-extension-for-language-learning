@@ -3,7 +3,7 @@
 import '../shared/core.js';
 import { translate, clearCache } from './translator.js';
 import { getSettings, updateSettings, getDictionary, saveWord, removeWord, getDueWords } from '../shared/storage.js';
-import { matchLanguage } from '../shared/languages.js';
+import { matchLanguage, LANGUAGES } from '../shared/languages.js';
 
 const { STORAGE_KEYS, dictKey } = globalThis.LLCore;
 const MENU_ID = 'selective-translate';
@@ -17,7 +17,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     // Default the target language to the browser UI language.
     const lang = matchLanguage(chrome.i18n.getUILanguage());
     if (lang) await updateSettings({ targetLang: lang });
-    chrome.runtime.openOptionsPage();
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/options/options.html#welcome') });
   }
   updateBadge();
 });
@@ -71,6 +71,14 @@ const handlers = {
   },
   async clearCache() {
     clearCache();
+    return {};
+  },
+  async languages() {
+    return { languages: LANGUAGES };
+  },
+  async setTargetLang({ lang }) {
+    if (!LANGUAGES.some((l) => l.code === lang)) throw new Error(`Unknown language: ${lang}`);
+    await updateSettings({ targetLang: lang });
     return {};
   },
   async openOptions() {
