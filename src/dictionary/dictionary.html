@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dictionary &amp; flashcards — Selective Translate</title>
+  <link rel="stylesheet" href="../ui/common.css">
+  <link rel="stylesheet" href="dictionary.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <h1>My dictionary</h1>
+      <nav class="tabs" role="tablist">
+        <button role="tab" id="tabWords" aria-controls="wordsView" type="button">Words <span id="countAll" class="pill"></span></button>
+        <button role="tab" id="tabReview" aria-controls="reviewView" type="button">Review <span id="countDue" class="pill accent"></span></button>
+      </nav>
+    </header>
+
+    <!-- Word list -->
+    <section id="wordsView" role="tabpanel" aria-labelledby="tabWords">
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Search words, translations, context…" aria-label="Search">
+        <select id="filter" aria-label="Filter">
+          <option value="all">All</option>
+          <option value="due">Due now</option>
+          <option value="learning">Learning</option>
+          <option value="mastered">Mastered</option>
+        </select>
+        <select id="sort" aria-label="Sort">
+          <option value="recent">Newest first</option>
+          <option value="alpha">A → Z</option>
+          <option value="due">Next review</option>
+        </select>
+      </div>
+      <ul id="list" class="list"></ul>
+      <div id="empty" class="empty" hidden>
+        <p><b>No saved words yet.</b></p>
+        <p class="muted">Select a word on any page, click the translate button, then the ☆ star to add it here.</p>
+      </div>
+      <div class="data-actions">
+        <button class="btn" id="export" type="button">Export JSON</button>
+        <label class="btn" for="importFile">Import JSON</label>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </section>
+
+    <!-- Flashcards -->
+    <section id="reviewView" role="tabpanel" aria-labelledby="tabReview" hidden>
+      <div id="session" class="session">
+        <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
+        <article class="flashcard" id="card" aria-live="polite">
+          <div class="front">
+            <div class="card-word" id="cardWord"></div>
+            <button class="btn" id="cardSpeak" type="button" aria-label="Listen">🔊 Listen</button>
+            <p class="card-context" id="cardContext"></p>
+          </div>
+          <div class="back" id="cardBack" hidden>
+            <div class="card-phon" id="cardPhon"></div>
+            <div class="card-translation" id="cardTranslation"></div>
+            <div class="card-pos" id="cardPos"></div>
+          </div>
+        </article>
+        <div class="answer-bar">
+          <button class="btn primary wide" id="show" type="button">Show answer <kbd>Space</kbd></button>
+          <div class="grades" id="grades" hidden>
+            <button class="btn grade again" data-grade="again" type="button">Again<small></small></button>
+            <button class="btn grade hard" data-grade="hard" type="button">Hard<small></small></button>
+            <button class="btn grade good" data-grade="good" type="button">Good<small></small></button>
+            <button class="btn grade easy" data-grade="easy" type="button">Easy<small></small></button>
+          </div>
+        </div>
+        <p class="muted small center">Keys: <kbd>Space</kbd> show · <kbd>1</kbd>–<kbd>4</kbd> answer</p>
+      </div>
+      <div id="done" class="empty" hidden>
+        <p class="big">🎉</p>
+        <p><b id="doneTitle">All caught up!</b></p>
+        <p class="muted" id="doneText"></p>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="dictionary.js"></script>
+</body>
+</html>

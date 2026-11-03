@@ -1,0 +1,32 @@
+body { width: 340px; }
+
+.top {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+}
+.top h1 { flex: 1; font-size: 15px; }
+
+main { display: grid; gap: 12px; padding: 14px; }
+
+.site { font-size: 13px; padding: 8px 10px; background: var(--bg-soft); border-radius: 8px; }
+.site b { overflow-wrap: anywhere; }
+
+.langs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 6px; }
+.swap {
+  width: 30px; height: 34px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg); color: var(--muted); cursor: pointer; font-size: 15px;
+}
+.swap:hover { color: var(--accent); }
+
+.provider-fields { display: grid; gap: 8px; }
+
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; border-top: 1px solid var(--line); font-size: 13px;
+}
+kbd {
+  font: 11px ui-monospace, monospace; padding: 1px 4px; border: 1px solid var(--line);
+  border-radius: 4px; background: var(--bg-soft);
+}

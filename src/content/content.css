@@ -1,0 +1,14 @@
+/*
+ * Page-level styles injected by the content script.
+ * The tooltip itself lives in a Shadow DOM (see content.js), so the only
+ * thing styled here is the CSS Custom Highlight used to mark saved words.
+ * Highlights don't add elements to the page, so they can't break layout.
+ */
+::highlight(st-learning) {
+  background-color: rgba(250, 204, 21, 0.32);
+  text-decoration: underline dotted rgba(202, 138, 4, 0.9);
+}
+
+::highlight(st-known) {
+  background-color: rgba(34, 197, 94, 0.2);
+}
